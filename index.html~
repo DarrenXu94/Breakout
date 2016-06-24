@@ -19,8 +19,6 @@
 
 	var speed = 2;
 
-	
-
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 	
@@ -53,11 +51,17 @@
         bricks[c][r] = { x: 0, y: 0, status: 1 };
     	}
 	}
+	var balls = [];
 	var ball = {x:canvas.width/2,y:canvas.height-30,ballRadius:10, dx:speed, dy:-speed};
+	
+	function createBall(x,y,r,dx,dy){
+		var newBall = {x:x,y:y,r:10, dx:dx, dy:dy};
+		balls.push(newBall); 
+	}
 
 	function drawBall() {
     ctx.beginPath();
-    ctx.arc(ball.x+speed, ball.y+speed, ball.ballRadius, 0, Math.PI*2);
+    ctx.arc(ball.x, ball.y, ball.ballRadius, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
@@ -147,13 +151,11 @@
                     b.status = 0;
 										score++;
 										if(score%(brickRowCount*brickColumnCount) == 0 && (score > 0)) {
-                        //alert("YOU WIN, CONGRATULATIONS!");
+                        
 												redrawBricks();
 												level ++;
 												speed ++;
-												//ball.dx += ball.level;
-												//ball.dy -= ball.level;
-                        //document.location.reload();
+												
                     }
                 }
             }
