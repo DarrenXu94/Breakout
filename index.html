@@ -31,9 +31,30 @@
 	createBall(x,y,ballRadius,2,-2);
 	createBall(50,50,ballRadius,2,2);
 
+	function ballCollision(){
+		for (h = 0; h < balls.length; h++) { 
+			for (k = 0; k < balls.length; k++) { 
+				if (h != k){ //Not working on itself
+					if (balls[h].x < balls[k].x + 10 && balls[h].x > balls[k].x - 10 && balls[h].y < balls[k].y + 10 && balls[h].y > balls[k].y - 10){
+						balls[h].dx = -balls[h].dx;
+						
+					}
+				}
+			}
+		}
+		
+	}
+
 	function drawBalls(){
 		for (i = 0; i < balls.length; i++) { 
-
+			ctx.beginPath();
+		  ctx.arc(balls[i].x, balls[i].y, 10, 0, Math.PI*2);
+		  ctx.fillStyle = "#0095DD";
+		  ctx.fill();
+		  ctx.closePath();
+		  balls[i].x += balls[i].dx*(level/8 + 1); //Set level difficulty increase here
+		  balls[i].y += balls[i].dy*(level/8 + 1);
+			
 			if(balls[i].x + balls[i].dx > canvas.width-balls[i].r || balls[i].x + balls[i].dx < balls[i].r) {
 					balls[i].dx = -balls[i].dx;
 			}
@@ -46,25 +67,15 @@
 				} else {
 						lives--;
 						if(!lives) {
-							alert("GAME OVER");
+							alert("GAME OVER. Score: " + score);
 							document.location.reload();
-						}else {
-							balls[i].x = canvas.width/2;
-							balls[i].y = canvas.height-30;
-							balls[i].dx = 2;
-							balls[i].dy = -2;
-							//paddleX = (canvas.width-paddleWidth)/2;
+						}else {						
+							balls.splice(i,1);					
 						}
 				}
 			}
 
-			ctx.beginPath();
-		  ctx.arc(balls[i].x, balls[i].y, 10, 0, Math.PI*2);
-		  ctx.fillStyle = "#0095DD";
-		  ctx.fill();
-		  ctx.closePath();
-		  balls[i].x += balls[i].dx;
-		  balls[i].y += balls[i].dy;
+			
 		}
 	}
 
@@ -98,7 +109,7 @@
 	}
 
 // Bricks
-
+	var brickcounter = 0;
 	var brickRowCount = 3;
 	var brickColumnCount = 5;
 	var brickWidth = 75;
@@ -141,8 +152,9 @@
 								if(balls[i].x > b.x && balls[i].x < b.x+brickWidth && balls[i].y > b.y && balls[i].y < b.y+brickHeight) {
 		              balls[i].dy = -balls[i].dy;
 									b.status = 0;
-									score++;
-									if(score%(brickRowCount*brickColumnCount) == 0 && (score > 0)) {
+									brickcounter ++;
+									score = (score + level*balls.length); //The more balls the better the score
+									if(brickcounter%(brickRowCount*brickColumnCount) == 0 && (brickcounter > 0)) {
                         
 												redrawBricks();
 												level ++;
@@ -189,15 +201,17 @@
 	function draw() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBalls();
+		ballCollision();
 		drawPaddles();
 		collisionDetection();
 		drawBricks();
 		drawScore();
 		drawLevel();
 		drawLives();
-		//requestAnimationFrame(draw);
+		requestAnimationFrame(draw);
 		
 	}
+	//Mouse events
 	document.addEventListener("mousemove", mouseMoveHandler, false);
 	function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
@@ -206,9 +220,19 @@
         paddles[i].px = relativeX;
     	}
 		}
+
     
 	}
-	setInterval(draw, 10);
+	document.addEventListener("mousedown", doMouse, false);
+	function doMouse(event){
+		var mx = event.x;
+  	var my = event.y;
+		mx -= canvas.offsetLeft;
+  	my -= canvas.offsetTop;
+		//alert("x:" + mx + " y:" + my);
+		createBall(mx,y,ballRadius,2,-2);
+	}
+	draw();
 </script>
 
 </body>
