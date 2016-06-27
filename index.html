@@ -121,6 +121,13 @@
 		}
 		return hit;	 	 
 	}
+	
+	function paddleGrow(){
+		for (pj = 0; pj < paddles.length; pj++) { 
+			paddles[pj].w += 40;
+		}	
+	}
+
 
 // Bricks
 	var brickcounter = 0;
@@ -280,7 +287,6 @@
 
 	function createPowerup(x,y,type){
 		var newP = {x:x,y:y,type:type};
-		newP.type = pColors[type];
 		powerups.push(newP); 
 	}
 	
@@ -289,15 +295,21 @@
 		for (pi = 0; pi < powerups.length; pi++) { 
 			ctx.beginPath();
       ctx.rect(powerups[pi].x, powerups[pi].y, 10, 10);
-      ctx.fillStyle = powerups[pi].type;
+      ctx.fillStyle = pColors[powerups[pi].type];
       ctx.fill();
       ctx.closePath();			
 			powerups[pi].y ++;
 
 			if (powerups[pi].y > canvas.height-20){
 				if (hitPaddle(powerups[pi].x)){
+					
 					if (powerups[pi].type == 0){
 						speedMod = 10;
+						
+					} else if (powerups[pi].type == 1){
+						//do something else
+						paddleGrow();
+						
 					}
 				}
 				powerups.splice(pi,1);
