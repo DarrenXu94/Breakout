@@ -77,7 +77,7 @@
 			} else if (balls[i].y + balls[i].dy > canvas.height-balls[i].r){
 				if (hitPaddle(balls[i].x)){
 					balls[i].dy = -balls[i].dy;
-					paddleCount --;
+					if (paddleCount > 0){paddleCount --;}
 					if (paddleCount == 1){paddleShrink();}
 					
 				} else {
@@ -184,7 +184,8 @@
 									b.status = 0;
 									brickcounter ++;
 									score = (score + level*balls.length); //The more balls the better the score
-									speedMod --;
+									
+									if(speedMod>0){speedMod --;}
 									
 									// Dropping random powerups
 									var chance = Math.floor((Math.random() * 2) + 1);
