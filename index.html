@@ -22,6 +22,7 @@
 
 //Powerup modifier
 	var speedMod = 0;
+	var paddleCount = 0;
 
 //To do with ball
 
@@ -76,6 +77,9 @@
 			} else if (balls[i].y + balls[i].dy > canvas.height-balls[i].r){
 				if (hitPaddle(balls[i].x)){
 					balls[i].dy = -balls[i].dy;
+					paddleCount --;
+					if (paddleCount == 1){paddleShrink();}
+					
 				} else {
 						lives--;
 						if(lives<=0) {
@@ -103,9 +107,8 @@
 	createPaddles(10,75, (canvas.width-75)/2, 100)
 	function drawPaddles(){
 		for (i = 0; i < paddles.length; i++) { 
-			
-			ctx.beginPath();
-		  ctx.rect(paddles[i].px+paddles[i].offset, canvas.height-paddles[i].h, paddles[i].w, paddles[i].h);
+			ctx.beginPath();	
+			ctx.rect(paddles[i].px+paddles[i].offset, canvas.height-paddles[i].h, paddles[i].w, paddles[i].h);	
 		  ctx.fillStyle = "#0095DD";
 		  ctx.fill();
 		  ctx.closePath();
@@ -122,10 +125,16 @@
 		return hit;	 	 
 	}
 	
-	function paddleGrow(){
+	function paddleGrow(){	
 		for (pj = 0; pj < paddles.length; pj++) { 
-			paddles[pj].w += 40;
-		}	
+			paddles[pj].w = 40+75;
+		}		
+	}
+
+	function paddleShrink(){	
+		for (pj = 0; pj < paddles.length; pj++) { 
+			paddles[pj].w = 75;
+		}		
 	}
 
 
@@ -176,6 +185,7 @@
 									brickcounter ++;
 									score = (score + level*balls.length); //The more balls the better the score
 									speedMod --;
+									
 									// Dropping random powerups
 									var chance = Math.floor((Math.random() * 2) + 1);
 									if (chance==1){
@@ -309,6 +319,7 @@
 					} else if (powerups[pi].type == 1){
 						//do something else
 						paddleGrow();
+						paddleCount = 10;
 						
 					}
 				}
