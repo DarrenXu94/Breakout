@@ -16,6 +16,10 @@
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 
+//Globals
+var running = true;
+var time = false;
+
 //To do with ball
 
 	var balls = [];
@@ -66,16 +70,13 @@
 					balls[i].dy = -balls[i].dy;
 				} else {
 						lives--;
-						if(!lives) {
-							alert("GAME OVER. Score: " + score);
-							document.location.reload();
-						}else {
-							/*balls[i].x = canvas.width/2;
-							balls[i].y = canvas.height-30;
-							balls[i].dx = 2;
-							balls[i].dy = -2;*/
-							balls.splice(i,1);
-							//paddleX = (canvas.width-paddleWidth)/2;
+						if(lives<=0) {
+							//alert("GAME OVER. Score: " + score);
+							//document.location.reload();
+							setTimeout(timeChange, 4000);
+							running = false;
+						}else {						
+							balls.splice(i,1);					
 						}
 				}
 			}
@@ -205,7 +206,13 @@
 
 	function draw() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBalls();
+		if (running){
+			drawBalls();
+		} else{
+			gameOver();
+			timeOut();
+		}
+    
 		ballCollision();
 		drawPaddles();
 		collisionDetection();
@@ -216,6 +223,28 @@
 		requestAnimationFrame(draw);
 		
 	}
+
+// Game Over
+
+	function gameOver(){
+		ctx.font = "16px Arial";
+		ctx.fillStyle = "#0095DD";
+		ctx.fillText("Game over. Score: "+score, canvas.width/2 -75, canvas.height/2);
+	}
+
+	function timeChange(){
+		time = true;
+	}
+
+	function timeOut(){
+		if (time){
+			ctx.font = "16px Arial";
+			ctx.fillStyle = "#0095DD";
+			ctx.fillText("Click to play again", canvas.width/2 -60, canvas.height/2 + 50);
+		}
+
+	}
+
 	//Mouse events
 	document.addEventListener("mousemove", mouseMoveHandler, false);
 	function mouseMoveHandler(e) {
@@ -230,12 +259,15 @@
 	}
 	document.addEventListener("mousedown", doMouse, false);
 	function doMouse(event){
-		var mx = event.x;
-  	var my = event.y;
-		mx -= canvas.offsetLeft;
-  	my -= canvas.offsetTop;
-		//alert("x:" + mx + " y:" + my);
-		createBall(mx,y,ballRadius,2,-2);
+		if (running){
+			var mx = event.x;
+			var my = event.y;
+			mx -= canvas.offsetLeft;
+			my -= canvas.offsetTop;
+			//alert("x:" + mx + " y:" + my);
+			createBall(mx,y,ballRadius,2,-2);
+		}
+		
 	}
 	draw();
 </script>
