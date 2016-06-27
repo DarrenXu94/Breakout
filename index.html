@@ -160,6 +160,14 @@ var time = false;
 									b.status = 0;
 									brickcounter ++;
 									score = (score + level*balls.length); //The more balls the better the score
+
+									// Dropping random powerups
+									var chance = Math.floor((Math.random() * 2) + 1);
+									if (chance==1){
+										createPowerup(balls[i].x,balls[i].y,1);		
+									}	
+									
+
 									if(brickcounter%(brickRowCount*brickColumnCount) == 0 && (brickcounter > 0)) {
                         
 												redrawBricks();
@@ -221,6 +229,7 @@ var time = false;
 		drawLevel();
 		drawLives();
 		requestAnimationFrame(draw);
+		drawPowerups();
 		
 	}
 
@@ -253,10 +262,31 @@ var time = false;
 			if(relativeX > 0 && relativeX < canvas.width) {
         paddles[i].px = relativeX;
     	}
-		}
-
-    
+		}  
 	}
+
+// Powerups
+	var powerups = [];
+
+	function createPowerup(x,y,type){
+		var newP = {x:x,y:y,type:type};
+		powerups.push(newP); 
+	}
+
+	function drawPowerups(){
+		for (pi = 0; pi < powerups.length; pi++) { 
+			ctx.beginPath();
+      ctx.rect(powerups[pi].x, powerups[pi].y, 10, 10);
+      ctx.fillStyle = "#ff9900";
+      ctx.fill();
+      ctx.closePath();			
+			powerups[pi].y ++;
+			if (powerups[pi].y > canvas.height){
+				powerups.splice(pi,1);
+			}
+		}
+	}
+
 	document.addEventListener("mousedown", doMouse, false);
 	function doMouse(event){
 		if (running){
