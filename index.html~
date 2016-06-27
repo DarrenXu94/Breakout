@@ -17,8 +17,11 @@
 	var ctx = canvas.getContext("2d");
 
 //Globals
-var running = true;
-var time = false;
+	var running = true;
+	var time = false;
+
+//Powerup modifier
+	var speedMod = 0;
 
 //To do with ball
 
@@ -56,8 +59,13 @@ var time = false;
 		  ctx.fillStyle = "#0095DD";
 		  ctx.fill();
 		  ctx.closePath();
-		  balls[i].x += balls[i].dx*(level/8 + 1); //Set level difficulty increase here
-		  balls[i].y += balls[i].dy*(level/8 + 1);
+			if (speedMod > 0){
+				balls[i].x += balls[i].dx; //no increase in speed
+		  	balls[i].y += balls[i].dy;
+			} else{ 
+				balls[i].x += balls[i].dx*(level/8 + 1); //Set level difficulty increase here
+		  	balls[i].y += balls[i].dy*(level/8 + 1);
+			}
 			
 			if(balls[i].x + balls[i].dx > canvas.width-balls[i].r || balls[i].x + balls[i].dx < balls[i].r) {
 					balls[i].dx = -balls[i].dx;
@@ -164,7 +172,8 @@ var time = false;
 									// Dropping random powerups
 									var chance = Math.floor((Math.random() * 2) + 1);
 									if (chance==1){
-										createPowerup(balls[i].x,balls[i].y,1);		
+										var chanceColor = Math.floor((Math.random() * 3)+1);	
+										createPowerup(balls[i].x,balls[i].y,chanceColor-1);		
 									}	
 									
 
@@ -267,21 +276,30 @@ var time = false;
 
 // Powerups
 	var powerups = [];
+	var pColors = ["#ff9900", "#ff3300", "#99ff66"];
 
 	function createPowerup(x,y,type){
 		var newP = {x:x,y:y,type:type};
+		newP.type = pColors[type];
 		powerups.push(newP); 
 	}
+	
 
 	function drawPowerups(){
 		for (pi = 0; pi < powerups.length; pi++) { 
 			ctx.beginPath();
       ctx.rect(powerups[pi].x, powerups[pi].y, 10, 10);
-      ctx.fillStyle = "#0095DD";
+      ctx.fillStyle = powerups[pi].type;
       ctx.fill();
       ctx.closePath();			
 			powerups[pi].y ++;
-			if (powerups[pi].y > canvas.height){
+
+			if (powerups[pi].y > canvas.height-20){
+				if (hitPaddle(powerups[pi].x)){
+					if (powerups[pi].type == 0){
+						speedMod = 10;
+					}
+				}
 				powerups.splice(pi,1);
 			}
 		}
