@@ -24,6 +24,7 @@
 	var speedMod = 0;
 	var paddleCount = 0;
 	var ballPass = 0;
+	var pColors = ["#ff9900", "#99ff66","#ff3300" ];
 
 //To do with ball
 
@@ -61,7 +62,7 @@
 			if (ballPass == 0){
 				ctx.fillStyle = "#0095DD";
 			}	else{
-				ctx.fillStyle = "#99ff66";
+				ctx.fillStyle = pColors[2];
 			}
 		  
 		  ctx.fill();
@@ -303,7 +304,7 @@
 
 // Powerups
 	var powerups = [];
-	var pColors = ["#ff9900", "#ff3300", "#99ff66"];
+	//var pColors = ["#ff9900", "#ff3300", "#99ff66"];
 
 	function createPowerup(x,y,type){
 		var newP = {x:x,y:y,type:type};
